@@ -5,8 +5,13 @@ document.addEventListener('DOMContentLoaded', () => {
     document.body.classList.add('ready')
   }, 200)
 })
+// --------------------------------------------------
+// axios的公共配置
+axios.defaults.baseURL = 'http://ajax-api.itheima.net'
 
+// axios 的其他配置
 
+// --------------------------------------------------
 // 封装轻提示函数 tip
 const toastBox = document.querySelector('#myToast')
   const toast = new bootstrap.Toast(toastBox, {

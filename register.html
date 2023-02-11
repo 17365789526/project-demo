@@ -88,7 +88,53 @@
     <script src="./lib/axios.js"></script>
     <script src="./js/common.js"></script>
     <script>
-      
+      // 整个项目axios的配置，应该是统一的 => common.js
+
+
+      // 注册逻辑
+      // 1.配置请求基地址
+      // 2.注册点击事件，收集表单数据
+      // 3.非空校验，长度校验
+      // 4.发送请求
+      // 5.处理响应
+
+      const btnRegister =  document.querySelector('#btn-register')
+      const form = document.querySelector('form')
+
+      btnRegister.addEventListener('click', async function(){
+        // 收集表单数据
+        const data = serialize(form, {hash: true})
+        console.log(data) // {username: 'admin', password: '123456'}
+
+        // 非空校验，长度校验
+        // .trim 去掉首尾空格
+        if (!data.username || data.username.trim() === '') return tip('用户名不能为空')
+        if (!data.password || data.password.trim() === '')  return tip('密码不能为空')
+        if (data.password.length < 6) return tip('密码的长度不能小于6位')
+
+        // 发送请求 await 只会等待成功的结果，如果要处理失败，需要tey catch
+        try {
+          const res = await axios.post('/register', data)
+          // console.log(res)
+          tip('注册成功')
+
+          // console.log(aa) // js是单线程的，一旦出错，就会中断执行
+
+          setTimeout(()=> {
+          location.href = './login.html' // 注册成功跳转登录
+          },500)
+        } catch (e) {
+          // console.dir(e)  // 以对象的方式打印一些错误信息，默认的错误信息只展示文本
+          // 状态吗409，表示用户名已存在
+          if(e.response.status === 409) {
+            // return tip('尊敬的用户，用户名已存在!')
+            return tip(e.response.data.message)
+          }
+          tip('注册失败, 服务器繁忙')
+        }
+
+      })
+       
     </script>
   </body>
 </html>
