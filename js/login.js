@@ -27,10 +27,10 @@ document.querySelector('#btn-login').addEventListener('click', async () => {
   try {
     const res = await axios.post('/login', { username, password})
     // console.log(res)
-    showToast(res.data.message)
+    showToast(res.message)
     // 3. 缓存响应数据
-    localStorage.setItem('token', res.data.data.token)
-    localStorage.setItem('username', res.data.data.username)
+    localStorage.setItem('token', res.data.token)
+    localStorage.setItem('username', res.data.username)
     // 4. 跳转首页
     // 延迟一会在跳转，让提示框显示
     setTimeout(() => {

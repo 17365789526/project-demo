@@ -21,7 +21,7 @@ async function getData() {
       // }
     })
     // console.log(res)
-    const overview = res.data.data.overview
+    const overview = res.data.overview
     // console.log(overview)
   
     // 渲染数据

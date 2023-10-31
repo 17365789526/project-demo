@@ -65,10 +65,12 @@ axios.interceptors.request.use(function (config) {
 
 // 添加响应拦截器
 // 统一处理token过期
+// 数据剥离
 axios.interceptors.response.use(function (response) {
   // 2xx 范围内的状态码都会触发该函数。
   // 对响应数据做点什么,比如: 数据剥离
-  return response;
+  // 剥离data属性，页面中少写.data属性，直接可以获取到数据
+  return response.data
 }, function (error) {
   // console.dir(error)
   // 超出 2xx 范围的状态码都会触发该函数。
