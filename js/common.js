@@ -61,4 +61,29 @@ axios.interceptors.request.use(function (config) {
 }, function (error) {
   // 对请求错误做些什么
   return Promise.reject(error);
-});
+})
+
+// 添加响应拦截器
+// 统一处理token过期
+axios.interceptors.response.use(function (response) {
+  // 2xx 范围内的状态码都会触发该函数。
+  // 对响应数据做点什么,比如: 数据剥离
+  return response;
+}, function (error) {
+  // console.dir(error)
+  // 超出 2xx 范围的状态码都会触发该函数。
+  // 对响应错误做点什么: 比如统一处理token失效
+  // 统一处理token失效
+  if (error.response.status === 401) {
+    // 弹框提示用户
+    showToast('请重新登录')
+    // 删除缓存
+    localStorage.removeItem('token')
+    localStorage.removeItem('username')
+    // 返回登录页
+    setTimeout(() => {
+      location.href = 'login.html'
+    }, 1500)
+  }
+  return Promise.reject(error);
+})
