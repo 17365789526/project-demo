@@ -33,3 +33,14 @@ function renderUsername() {
   // console.log(username)
   document.querySelector('.username').innerText = username
 }
+
+// 抽取退出登录函数
+function registerLogout() {
+  document.querySelector('#logout').addEventListener('click', () => {
+    // console.log('退出了')
+    // 删除缓存并跳转登录页
+    localStorage.removeItem('token')
+    localStorage.removeItem('username')
+    location.href = 'login.html'
+  })
+}
