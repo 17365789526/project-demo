@@ -25,3 +25,11 @@ function checkLogin() {
     },1500)
   }
 }
+
+// 抽取渲染函数 (渲染缓存中的用户名)
+function renderUsername() {
+  // 读取并渲染用户名
+  const username = localStorage.getItem('username')
+  // console.log(username)
+  document.querySelector('.username').innerText = username
+}
