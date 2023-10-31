@@ -11,3 +11,17 @@ function showToast(msg) {
   toast.show()
 }
 // showToast('你好吗？')
+
+// 抽取校验函数 (判断是否登录)
+function checkLogin() {
+  // 判断token
+  const token = localStorage.getItem('token')
+  // console.log(token)
+  // token为null说明没有缓存
+  if (token === null) {
+    showToast('请先登录')
+    setTimeout(() => {
+      location.href = 'login.html'
+    },1500)
+  }
+}
