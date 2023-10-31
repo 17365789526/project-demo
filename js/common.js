@@ -45,3 +45,20 @@ function registerLogout() {
   })
 }
 
+// 添加请求拦截器
+axios.interceptors.request.use(function (config) {
+  // 可以通过headers,查看+设置请求头
+  // config.headers['info'] = 'itheima66'
+  // 每次发送请求,都会执行这个回调函数
+  // console.log(config)
+  // 在发送请求之前做些什么,比如: 统一设置token
+  const token = localStorage.getItem('token')
+  // token存在,才携带
+  if (token) {
+    config.headers['Authorization'] = token
+  }
+  return config;
+}, function (error) {
+  // 对请求错误做些什么
+  return Promise.reject(error);
+});

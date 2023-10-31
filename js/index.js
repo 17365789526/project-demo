@@ -9,16 +9,16 @@ registerLogout()
 
 // 首页-统计数据
 async function getData() {
-  const token = localStorage.getItem('token')
+  // const token = localStorage.getItem('token')
   try {
     // 调用接口后(登录成功之后才可以调用)
     const res = await axios({
       url: '/dashboard',
       // 请求头中携带token
       // 不携带token,直接报错
-      headers: {
-        Authorization: token
-      }
+      // headers: {
+      //   Authorization: token
+      // }
     })
     // console.log(res)
     const overview = res.data.data.overview
