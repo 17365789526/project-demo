@@ -44,3 +44,4 @@ function registerLogout() {
     location.href = 'login.html'
   })
 }
+
