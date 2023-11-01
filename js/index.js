@@ -210,6 +210,131 @@ function renderSalary(salaryData) {
   myChart.setOption(option)
 }
 
+// 渲染每组薪资函数
+function renderGroupSalary(groupData) {
+  // console.log(groupData)
+
+  // 初始化实例
+  const dom = document.querySelector('#lines')
+  const myChart = echarts.init(dom)
+
+  // 定义选项和数据
+  const option = {
+    // 显示提示框
+    tooltip: {},
+    // 绘图网络
+    grid: {
+      left: 70,
+      top: 30,
+      right: 30,
+      bottom: 50
+    },
+    xAxis: {
+      type: 'category',
+      // data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+      // 默认渲染第一组的数据
+      data: groupData[1].map(v => v.name),
+      // 线的类型，颜色，文字的颜色
+      axisLine: {
+        lineStyle: {
+          color: '#ccc',
+          type: 'dashed'
+        }
+      },
+      // 坐标轴刻度标签的相关设置
+      axisLabel: {
+        // 刻度标签文字的颜色
+        color: '#999'
+      }
+    },
+    yAxis: {
+      type: 'value',
+      // 分割线的类型
+      splitLine: {
+        lineStyle: {
+          type: 'dashed'
+        }
+      }
+    },
+    // series中设置多个图形，就会渲染多个图形
+    series: [
+      {
+        name: '期望薪资',
+        // data: [120, 200, 150, 80, 70, 110, 130],
+        data: groupData[1].map(v => v.hope_salary),
+        type: 'bar',
+        // 柱状图的样式
+        itemStyle: {
+          // 柱状图的颜色
+          color: {
+            type: 'linear',
+            x: 0,
+            y: 0,
+            x2: 0,
+            y2: 1,
+            colorStops: [{
+              offset: 0, color: '#34D39A' // 0% 处的颜色
+            }, {
+              offset: 1, color: 'rgba(52,211,154,0.2)' // 100% 处的颜色
+            }],
+            global: false // 缺省为 false
+          }
+        }
+      },
+      {
+        name: '实际薪资',
+        // data: [120, 200, 150, 80, 70, 110, 130],
+        data: groupData[1].map(v => v.salary),
+        type: 'bar',
+        // 柱状图的样式
+        itemStyle: {
+          // 柱状图的颜色
+          color: {
+            type: 'linear',
+            x: 0,
+            y: 0,
+            x2: 0,
+            y2: 1,
+            colorStops: [{
+              offset: 0, color: '#499FEE' // 0% 处的颜色
+            }, {
+              offset: 1, color: 'rgba(73,159,238,0.2)' // 100% 处的颜色
+            }],
+            global: false // 缺省为 false
+          }
+        }
+      }
+    ]
+  }
+
+  // 基于选项和数据绘制图表
+  myChart.setOption(option)
+
+
+  // 高亮切换
+  const btns = document.querySelector('#btns')
+  btns.addEventListener('click', (e) => {
+    if (e.target.classList.contains('btn')) {
+      // console.log('点了按钮')
+      btns.querySelector('.btn-blue').classList.remove('btn-blue')
+      e.target.classList.add('btn-blue')
+
+      // 数据切换
+      const index = e.target.innerText
+      // console.log(index)
+      const data = groupData[index]
+
+      option.xAxis.data = data.map(v => v.name)
+      option.series[0].data = data.map(v => v.hope_salary)
+      option.series[1].data = data.map(v => v.salary)
+
+      // 重新渲染
+      myChart.setOption(option)
+    }
+  })
+
+}
+
 // 首页-统计数据
 async function getData() {
   // const token = localStorage.getItem('token')
@@ -236,6 +361,9 @@ async function getData() {
 
     // 调用函数-渲染薪资分布
     renderSalary(salaryData)
+
+    // 调用函数-渲染每组薪资
+    renderGroupSalary(groupData)
 
   // } catch (error) {
   //   // 首页-登录状态过期
