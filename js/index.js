@@ -335,6 +335,96 @@ function renderGroupSalary(groupData) {
 
 }
 
+// 渲染男女薪资分布函数
+function renderGenderSalary(salaryData) {
+  // console.log(salaryData)
+
+  // 初始化实例
+  const dom = document.querySelector('#gender')
+  const myChart = echarts.init(dom)
+
+  // 定义选项和数据
+  const option = {
+    tooltip: {
+      trigger: 'item'
+    },
+    // 不写legend 不会显示图例组件
+    // legend: {
+    //   top: '5%',
+    //   left: 'center'
+    // },
+    // 颜色
+    color: ['#fda224', '#5097ff', '#3abcfa', '#34d39a'],
+    // 标题，通过数组设置多个
+    title: [
+      {
+        text: '男女薪资分布',
+        left: 10,
+        top: 10,
+        // text属性的样式
+        textStyle: {
+          // 文字的大小
+          fontSize: 16
+        }
+      },
+      {
+        text: '男生',
+        left: '50%',
+        top: '45%',
+        textStyle: {
+          fontSize: 12
+        },
+        textAlign: 'center'
+      },
+      {
+        text: '女生',
+        left: '50%',
+        top: '85%',
+        textStyle: {
+          fontSize: 12
+        },
+        textAlign: 'center'
+      }
+    ],
+    series: [
+      {
+        type: 'pie',
+        radius: ['20%', '30%'],
+        // 饼图的中心（圆心）坐标，数组的第一项是横坐标，第二项是纵坐标
+        center: ['50%', '30%'],
+        data: salaryData.map(v => {
+          return { value: v.b_count, name: v.label }
+        })
+        // data: [
+        //   { value: 1048, name: 'Search Engine' },
+        //   { value: 735, name: 'Direct' },
+        //   { value: 580, name: 'Email' },
+        //   { value: 484, name: 'Union Ads' },
+        //   { value: 300, name: 'Video Ads' }
+        // ]
+      },
+      {
+        type: 'pie',
+        radius: ['20%', '30%'],
+        center: ['50%', '70%'],
+        data: salaryData.map(v => {
+          return { value: v.g_count, name: v.label }
+        })
+        // data: [
+        //   { value: 1048, name: 'Search Engine' },
+        //   { value: 735, name: 'Direct' },
+        //   { value: 580, name: 'Email' },
+        //   { value: 484, name: 'Union Ads' },
+        //   { value: 300, name: 'Video Ads' }
+        // ]
+      }
+    ]
+  }
+
+  // 基于选项和数据绘制图表
+  myChart.setOption(option)
+}
+
 // 首页-统计数据
 async function getData() {
   // const token = localStorage.getItem('token')
@@ -364,6 +454,9 @@ async function getData() {
 
     // 调用函数-渲染每组薪资
     renderGroupSalary(groupData)
+
+    // 调用函数-渲染男女薪资分布
+    renderGenderSalary(salaryData)
 
   // } catch (error) {
   //   // 首页-登录状态过期
