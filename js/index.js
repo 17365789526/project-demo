@@ -7,6 +7,13 @@ renderUsername()
 // 调用退出登录函数 给退出按钮注册点击事件
 registerLogout()
 
+// 渲染顶部数据的函数
+function renderOverview(overview) {
+  Object.keys(overview).forEach(key => {
+    document.querySelector(`.${key}`).innerHTML = overview[key]
+  })
+}
+
 // 首页-统计数据
 async function getData() {
   // const token = localStorage.getItem('token')
@@ -21,13 +28,12 @@ async function getData() {
       // }
     })
     // console.log(res)
-    const overview = res.data.overview
+    // const overview = res.data.overview
+    const { overview, year, salaryData, groupData, provinceData } = res.data
     // console.log(overview)
   
-    // 渲染数据
-    Object.keys(overview).forEach(key => {
-      document.querySelector(`.${key}`).innerHTML = overview[key]
-    })
+    //  调用函数-渲染顶部数据
+    renderOverview(overview)
   // } catch (error) {
   //   // 首页-登录状态过期
   //   // 判断token失效 (状态码401) :token过期,token被篡改
