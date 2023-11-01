@@ -126,6 +126,90 @@ function renderYearSalary(year) {
   myChart.setOption(option)
 }
 
+// 渲染薪资分布函数
+function renderSalary(salaryData) {
+  // console.log(salaryData)
+
+  // 初始化实例
+  const dom = document.querySelector('#salary')
+  const myChart = echarts.init(dom)
+
+  // 定义属性和数据
+  const option = {
+    title: {
+      text: '班级薪资分布',
+      left: 10,
+      top: 15
+    },
+    tooltip: {
+      trigger: 'item'
+    },
+    legend: {
+      // top: '5%',
+      // 离容器下侧的距离
+      bottom: '5%',
+      left: 'center'
+    },
+    series: [
+      {
+        name: '班级薪资分布',
+        // type=pie 饼图
+        type: 'pie',
+        // 数组的第一项是内半径，第二项是外半径
+        radius: ['55%', '70%'],
+        // 图形样式
+        itemStyle: {
+          // 半径
+          borderRadius: 15,
+          // 颜色
+          borderColor: '#fff',
+          // 粗细
+          borderWidth: 2
+        },
+        // 高亮状态的扇区和标签样式
+        // emphasis: {
+        //   label: {
+        //     show: true,
+        //     fontSize: 100,
+        //     fontWeight: 'bold'
+        //   }
+        // },
+        // 饼状图说明文本
+        label: {
+          show: false,
+          // show: true,
+          // position: 'center'
+        },
+        // 说明文本的指引线
+        labelLine: {
+          show: false
+          // show: true
+        },
+        // 是否启用防止标签重叠策略，默认开启
+        // avoidLabelOverlap: false,
+        data: salaryData.map(v => {
+          return {
+            value: v.g_count + v.b_count,
+            name: v.label
+          }
+        })
+        //   [
+        //   { value: 1048, name: 'Search Engine' },
+        //   { value: 735, name: 'Direct' },
+        //   { value: 580, name: 'Email' },
+        //   { value: 484, name: 'Union Ads' },
+        //   { value: 300, name: 'Video Ads' }
+        // ]
+      }
+    ],
+    // 颜色
+    color: ['#fda224', '#5097ff', '#3abcfa', '#34d39a']
+  }
+
+  // 根据属性和数据绘制图表
+  myChart.setOption(option)
+}
+
 // 首页-统计数据
 async function getData() {
   // const token = localStorage.getItem('token')
@@ -149,6 +233,9 @@ async function getData() {
 
     // 调用函数-渲染薪资走势
     renderYearSalary(year)
+
+    // 调用函数-渲染薪资分布
+    renderSalary(salaryData)
 
   // } catch (error) {
   //   // 首页-登录状态过期
