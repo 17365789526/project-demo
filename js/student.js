@@ -43,6 +43,19 @@ const modalDom = document.querySelector('#modal')
 const modal = new bootstrap.Modal(modalDom)
 
 document.querySelector('#openModal').addEventListener('click', () => {
+  // 修改标题
+  document.querySelector('.modal-title').innerText = '添加学员'
+
+  // 表单重置
+  document.querySelector('#form').reset()
+
+  // 清空籍贯 (城市，地区)
+  citySelect.innerHTML = '<option value="">--城市--</option>'
+  areaSelect.innerHTML = '<option value="">--地区--</option>'
+
+  // 删除自定义属性
+  modalDom.dataset.id = ''
+
   modal.show()
 })
 
@@ -132,6 +145,12 @@ document.querySelector('.list').addEventListener('click', (e) => {
     const id = e.target.parentNode.parentNode.dataset.id
     delStudent(id)
   }
+
+  // 点了编辑标签-调用对应的函数
+  if (e.target.classList.contains('bi-pen')) {
+    const id = e.target.parentNode.parentNode.dataset.id 
+    editStudent(id)
+  }
 })
 
 // 抽取函数-删除数据
@@ -143,4 +162,89 @@ async function delStudent(id) {
 
   // 重新渲染
   getData()
+}
+
+// 抽取函数-编辑学员数据
+async function editStudent(id) {
+  // console.log('编辑', id)
+  const res = await axios.get(`/students/${id}`)
+  // console.log(res)
+
+  // 修改标题
+  document.querySelector('.modal-title').innerText = '修改学员'
+
+  // 设置输入框(姓名、年龄、组号、期望薪资、就业薪资)
+  // 属性名数组
+  const keyArr = ['name', 'age', 'group', 'hope_salary', 'salary']
+  keyArr.forEach(key => {
+    document.querySelector(`[name=${key}]`).value = res.data[key]
+  })
+
+  // 设置性别(0 男, 1 女)
+  const { gender } = res.data
+  // 伪数组[男checkbox，女checkbox]
+  const chks = document.querySelectorAll('[name=gender')
+  chks[gender].checked = true
+
+  // 设置籍贯
+  const { province, city, area } = res.data
+
+  // 设置省（设置select标签的value属性，对应的option会被选中）
+  proSelect.value = province
+
+  // 设置市
+  const cityRes = await axios.get('/api/city', {
+    params: {
+      pname: province
+    }
+  })
+
+  const cityHtml = cityRes.list.map(v => {
+    return `<option value="${v}">${v}</option>`
+  }).join('')
+  citySelect.innerHTML = `<option value="">--城市--</option>${cityHtml}`
+  citySelect.value = city
+
+  // 设置区
+  const areaRes = await axios.get('/api/area', {
+    params: {
+      pname: province,
+      cname: city
+    }
+  })
+  const areaHtml = areaRes.list.map(v => {
+    return `<option value="${v}">${v}</option>`
+  }).join('')
+  areaSelect.innerHTML = `<option value="">--地区--</option>${areaHtml}`
+  areaSelect.value = area
+  // 弹框
+  modal.show()
+
+  // 保存学员id，用来却分 新增（dataset.id不存在） 编辑（dataset.id有值）
+  modalDom.dataset.id = id
+}
+
+// 抽取函数-保存修改
+async function saveEdit() {
+  console.log('保存修改')
+  // 数据收集+转换+提交
+  const form = document.querySelector('#form')
+  const data = serialize(form, { hash: true, empty: true })
+  data.age = +data.age
+  data.gender = +data.gender
+  data.hope_salary = +data.hope_salary
+  data.salary = +data.salary
+  data.group = +data.group
+
+  try {
+    // 修改成功
+    const saveRes = await axios.put(`/students/${modalDom.dataset.id}`, data)
+    showToast(saveRes.message)
+    getData()
+  } catch (error) {
+    // 修改失败
+    // console.dir(error)
+    showToast(error.response.data.message)
+  }
+  modal.hide()
 }
