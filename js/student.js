@@ -123,3 +123,24 @@ async function addStudent() {
   }
   modal.hide()
 }
+
+// 绑定事件
+document.querySelector('.list').addEventListener('click', (e) => {
+  // 点了删除标签-调用对应的函数
+  if (e.target.classList.contains('bi-trash')) {
+    // console.log(e.target.parentNode.parentNode.dataset.id)
+    const id = e.target.parentNode.parentNode.dataset.id
+    delStudent(id)
+  }
+})
+
+// 抽取函数-删除数据
+async function delStudent(id) {
+  // console.log('点了删除')
+  // console.log(id)
+  // 获取id+调用接口
+  await axios.delete(`/students/${id}`)
+
+  // 重新渲染
+  getData()
+}
